@@ -13,6 +13,23 @@ public class Store {
     String owner; // tulajdonos
     String name;
 
+    public Boolean getContract() {
+        return contract;
+    }
+
+    public void setContract(Boolean contract) {
+        this.contract = contract;
+    }
+
+    Boolean contract;
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public List<Book> getBook() {
         return book;
     }
@@ -60,6 +77,7 @@ public class Store {
                 ", id=" + id +
                 ", addrass='" + address + '\'' +
                 ", owner='" + owner + '\'' +
+                ", contact='" + contract + '\'' +
                 ", name='" + name + '\'' +
                 '}';
     }

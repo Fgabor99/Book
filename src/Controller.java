@@ -14,7 +14,6 @@ public class Controller {
 
         addBook(isbn, title, releaseDate, edition, getAuthorById(authorId));
     } // új könyv hozzádása
-
     public void addBook(Integer isbn, String title, LocalDate releaseDate, int edition, Author author) {
 
         Book book = new Book();
@@ -32,7 +31,6 @@ public class Controller {
         session.flush();
         session.getTransaction().commit();
     }
-
     public void modifyBook(int id, Integer isbn, String title, LocalDate releaseDate, int edition, Integer authorId) {
 
         Session session = HibernateContext.getSession();
@@ -53,7 +51,6 @@ public class Controller {
         session.flush();
         session.getTransaction().commit();
     }
-
     public List<Book> findBookByIsbn(int num) {
 
         Session session = HibernateContext.getSession();
@@ -70,7 +67,6 @@ public class Controller {
 
         return books;
     }
-
     public List<Book> findBookByAuthor(String name) {
 
         Session session = HibernateContext.getSession();
@@ -88,7 +84,6 @@ public class Controller {
 
         return books;
     }// szerzőt keresds
-
     public List<Book> findBookByTitle(String name) {
 
         Session session = HibernateContext.getSession();
@@ -108,7 +103,27 @@ public class Controller {
     }
 
     // piac kivezetes es kereses modositasa
+    public void modifyAuthor(int id, String name, LocalDate birthDate, String gender) {
 
+        Session session = HibernateContext.getSession();
+        session.beginTransaction();
+        EntityManager em = session.getEntityManagerFactory().createEntityManager();
+
+        session.createQuery("UPDATE Author p " +
+                "SET p.id = :id ," +
+                "p.name = :name ," +
+                "p.birthDate =:birthDate," +
+                "p.gender = :gender " +
+                        " WHERE p.id = :id")
+                .setParameter("id",id)
+                .setParameter("name",name)
+                .setParameter("birthDate",birthDate)
+                .setParameter("gender",gender).executeUpdate();
+
+        em.close();
+        session.flush();
+        session.getTransaction().commit();
+    }
     public Author addAuthor(String name, LocalDate birthDate, String gender) {
 
         Author author = new Author();
@@ -126,22 +141,22 @@ public class Controller {
 
         return author;
     } // új szerző hozzáadása
-
-    public void modifyAuthor(int id, String name, LocalDate birthDate, String gender) {
-
+    public void deleteAuthor(int id){
         Session session = HibernateContext.getSession();
         session.beginTransaction();
+
         EntityManager em = session.getEntityManagerFactory().createEntityManager();
+        em.getTransaction().begin();
 
-        session.createQuery("UPDATE Author p " +
-                "SET p.id = :id ,p.name = :name ,p.birthDate =:birthDate,p.gender = :gender " +
-                " WHERE p.id = :id").setParameter("id",id).setParameter("name",name).setParameter("birthDate",birthDate).setParameter("gender",gender).executeUpdate();
+        Author author = (Author) em.createQuery("select a " +
+                "from Author a " +
+                "where a.id = :id").setParameter("id", id).getResultList().get(0);
+        em.remove(author);
 
-        em.close();
         session.flush();
         session.getTransaction().commit();
+        em.close();
     }
-
     public Author getAuthorById(Integer id) {
 
         Author author;
@@ -160,7 +175,47 @@ public class Controller {
 
         return author;
     }
+    public void addStore(String name,String address,String owner,Boolean contract){
 
+        Store store = new Store();
+
+        store.setName(name);
+        store.setAddress(address);
+        store.setOwner(owner);
+        store.setContract(contract);
+
+        Session session = HibernateContext.getSession();
+
+        session.beginTransaction();
+        session.persist(store);
+        session.flush();
+        session.getTransaction().commit();
+    }
+
+    public void modifyStore(int id,String name,String address,String owner,Boolean contract){
+
+        Session session = HibernateContext.getSession();
+        session.beginTransaction();
+        EntityManager em = session.getEntityManagerFactory().createEntityManager();
+
+        session.createQuery("UPDATE Store s " +
+                "SET s.id = :id ," +
+                        "s.name = :name ," +
+                        "s.address =:address," +
+                        "s.owner = :owner ," +
+                        "s.contract  = :contrct " +
+                        " WHERE s.id = :id")
+
+                .setParameter("id",id)
+                .setParameter("name",name)
+                .setParameter("address",address)
+                .setParameter("contract",contract)
+                .executeUpdate();
+
+        em.close();
+        session.flush();
+        session.getTransaction().commit();
+    }
     public void deleteAll() {
 //        List<Author> authors = allAuthors();
         Session session = HibernateContext.getSession();
@@ -178,22 +233,6 @@ public class Controller {
         session.flush();
         session.getTransaction().commit();
     }
-    public void deleteAuthor(int id){
-        Session session = HibernateContext.getSession();
-        session.beginTransaction();
-
-        EntityManager em = session.getEntityManagerFactory().createEntityManager();
-        em.getTransaction().begin();
-
-        Author author = (Author) em.createQuery("select a " +
-                "from Author a " +
-                "where a.id = :id").setParameter("id", id).getResultList().get(0);
-        em.remove(author);
-
-        session.flush();
-        session.getTransaction().commit();
-        em.close();
-    }
     public List<Author> allAuthors() {
 
         List<Author> authors = new ArrayList<>();
@@ -210,7 +249,6 @@ public class Controller {
 
         return authors;
     }
-
     public List<Book> allBooks() {
 
         List<Book> books = new ArrayList<>();

@@ -11,19 +11,20 @@ public class Menu {
     void menu(){
         printMenu();
         Scanner scanner = new Scanner(System.in);
+
         int num = scanner.nextInt();
+
         if(num == 1){
             bookMenu(scanner);
         }
         if(num == 2){
             authorMenu(scanner);
        }
-//        if (num == 3){
-//         storeMenu();
-//        }
+        if (num == 3){
+         storeMenu(scanner);
+       }
     }
     public void bookMenu(Scanner scanner){
-
         Controller controller=new Controller();
 
         System.out.println(" új könyv hozzáadása (1) ");
@@ -108,7 +109,6 @@ public class Menu {
         if(num == 0 ){menu();}
     }
     public void authorMenu(Scanner scanner){
-
         Controller controller=new Controller();
 
         System.out.println("\tszerző hozzáadása (1) ");
@@ -133,7 +133,6 @@ public class Menu {
             controller.addAuthor(name,releaseDate,gender);
         }
         if(num == 2){
-
             System.out.println("írd be a szerző ID-t");
             int id =scanner.nextInt();
             String fgf = scanner.nextLine(); // magyarázzátok el el ne felejtsd
@@ -153,24 +152,40 @@ public class Menu {
         if(num == 3){
             System.out.println("ird be a szerző ID-t");
             int id = scanner.nextInt();
-
             controller.deleteAuthor(id);
         }
         if(num == 0 ){menu();}
     };
     public void storeMenu(Scanner scanner){
-
         Controller controller = new Controller();
 
-        System.out.println(" új könyv hozzáadása (1)");
-        System.out.println(" új könyv hozzáadása (2)");
-        System.out.println(" új könyv hozzáadása (3)");
-        System.out.println(" új könyv hozzáadása (4)");
-        System.out.println(" új könyv hozzáadása (5)");
+        System.out.println(" új bolt hozzáadása  (1)");
+        System.out.println("    bolt módosítása  (2)");
+        System.out.println("szerződés módósítása (3)");
         System.out.println(" vissza a menübe (0)");
 
         int num=scanner.nextInt();
+        if(num == 1 ){
+            System.out.println("írd be a bolt nevét");
+            String name=scanner.nextLine();
 
+            String fgf = scanner.nextLine(); // magyarázzátok el el ne felejtsd
+
+            System.out.println("írd be a bolt címét");
+            String address=scanner.nextLine();
+
+            System.out.println("írd be a tulajdonos nevét");
+            String owner=scanner.nextLine();
+
+            System.out.println("szerződés true vagy false");
+            Boolean contract=scanner.hasNext();
+
+            controller.addStore(name,address,owner,contract);
+        }
+        if(num == 2 ){
+
+        }
+        if(num == 3 ){}
         if(num == 0 ){menu();}
     };
 }
