@@ -1,35 +1,18 @@
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.PersistenceContext;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 @org.springframework.stereotype.Controller
 public class Controller {
     private Store store = new Store();
 
-    public Author addAuthor(String name, LocalDate birthDate, String gender) {
-        Author author = new Author();
-
-        author.setName(name);
-        author.setBirthDate(birthDate);
-        author.setGender(gender);
-
-        Session session = HibernateContext.getSession();
-        session.beginTransaction();
-        session.persist(author);
-        session.flush();
-        session.getTransaction().commit();
-        return author;
-    } // új szerző hozzáadása
     public void addBook(Integer isbn, String title, LocalDate releaseDate, int edition, Integer authorId) {
 
-       addBook(isbn, title, releaseDate, edition, getAuthorById(authorId) );
+        addBook(isbn, title, releaseDate, edition, getAuthorById(authorId));
     } // új könyv hozzádása
 
     public void addBook(Integer isbn, String title, LocalDate releaseDate, int edition, Author author) {
@@ -43,68 +26,197 @@ public class Controller {
         book.setAuthor(author);
 
         Session session = HibernateContext.getSession();
+
         session.beginTransaction();
         session.persist(book);
         session.flush();
         session.getTransaction().commit();
     }
 
-    public Author getAuthorById(Integer id){
-        Author author;
+    public void modifyBook(int id, Integer isbn, String title, LocalDate releaseDate, int edition, Integer authorId) {
+
         Session session = HibernateContext.getSession();
         session.beginTransaction();
         EntityManager em = session.getEntityManagerFactory().createEntityManager();
+
+        session.createQuery("UPDATE Book p " +
+                "SET p.isbn = :isbn ,p.author.id = :authorId,p.edition =:edition,p.releaseDate = :relaseDate, p.title = :title " +
+                " WHERE p.id = :id")
+                .setParameter("isbn",isbn)
+                .setParameter("id" ,id)
+                .setParameter("title",title)
+                .setParameter("releaseDate",releaseDate)
+                .setParameter("edition",edition)
+                .setParameter("authorId",authorId).executeUpdate();
+
+        em.close();
+        session.flush();
+        session.getTransaction().commit();
+    }
+
+    public List<Book> findBookByIsbn(int num) {
+
+        Session session = HibernateContext.getSession();
+        Transaction tx = session.beginTransaction();
+
+        Query<Book> b = session.createQuery("select b " +
+                        "from Book b " +
+                        "where b.isbn = :n  ",
+                Book.class).setParameter("n", num);
+        List<Book> books = (List<Book>) b;
+
+        session.getTransaction().commit();
+        session.close();
+
+        return books;
+    }
+
+    public List<Book> findBookByAuthor(String name) {
+
+        Session session = HibernateContext.getSession();
+        Transaction tx = session.beginTransaction();
+
+        Query<Book> a = session.createQuery("select a " +
+                        "from Book a " +
+                        "where a.author.name = :name  ",
+                Book.class).setParameter("n", name);
+        List<Book> books = (List<Book>) a;
+
+        session.clear();
+        session.close();
+        session.getTransaction().commit();
+
+        return books;
+    }// szerzőt keresds
+
+    public List<Book> findBookByTitle(String name) {
+
+        Session session = HibernateContext.getSession();
+        Transaction tx = session.beginTransaction();
+
+        Query<Book> a = session.createQuery("select a " +
+                        "from Book a " +
+                        "where a.title = :name  ",
+                Book.class).setParameter("n", name);
+        List<Book> books = (List<Book>) a;
+
+        session.clear();
+        session.close();
+        session.getTransaction().commit();
+
+        return books;
+    }
+
+    // piac kivezetes es kereses modositasa
+
+    public Author addAuthor(String name, LocalDate birthDate, String gender) {
+
+        Author author = new Author();
+
+        author.setName(name);
+        author.setBirthDate(birthDate);
+        author.setGender(gender);
+
+        Session session = HibernateContext.getSession();
+
+        session.beginTransaction();
+        session.persist(author);
+        session.flush();
+        session.getTransaction().commit();
+
+        return author;
+    } // új szerző hozzáadása
+
+    public void modifyAuthor(int id, String name, LocalDate birthDate, String gender) {
+
+        Session session = HibernateContext.getSession();
+        session.beginTransaction();
+        EntityManager em = session.getEntityManagerFactory().createEntityManager();
+
+        session.createQuery("UPDATE Author p " +
+                "SET p.id = :id ,p.name = :name ,p.birthDate =:birthDate,p.gender = :gender " +
+                " WHERE p.id = :id").setParameter("id",id).setParameter("name",name).setParameter("birthDate",birthDate).setParameter("gender",gender).executeUpdate();
+
+        em.close();
+        session.flush();
+        session.getTransaction().commit();
+    }
+
+    public Author getAuthorById(Integer id) {
+
+        Author author;
+        Session session = HibernateContext.getSession();
+        EntityManager em = session.getEntityManagerFactory().createEntityManager();
         em.getTransaction().begin();
-        author = (Author) em.createQuery("select a from Author a where a.id = :id").setParameter("id", id).getResultList().get(0);
+
+        author = (Author) em.createQuery("select a " +
+                "from Author a " +
+                "where a.id = :id").setParameter("id", id).getResultList().get(0);
+
         em.getTransaction().commit();
         em.close();
         session.flush();
         session.getTransaction().commit();
+
         return author;
     }
 
-    public void bookModifaction() {
-        Scanner scanner=new Scanner(System.in);
-        System.out.println("melyik könyvet szeretnéd módosítani ? ");
-        System.out.println("írd be az ID-t");
-        int num=scanner.nextInt();
-
-    }
-    /*         System.out.println("írd be a könyv címét vagy a szerzőt vagy az ISBN-t"); */
-    public void bookSearch() {
-    }
-    public void deleteAll(){
-        List<Author> authors = allAuthors();
+    public void deleteAll() {
+//        List<Author> authors = allAuthors();
         Session session = HibernateContext.getSession();
         session.beginTransaction();
+
         EntityManager em = session.getEntityManagerFactory().createEntityManager();
         em.getTransaction().begin();
-        for (Author author: authors) {
-            em.remove(author);
-        };
-        em.getTransaction().commit();
+        em.createQuery("delete from Book ").executeUpdate();
+        em.createQuery("delete from Author ").executeUpdate();
+
+//        for (Author author : authors) {
+//            em.remove(author);
+//        };
         em.close();
         session.flush();
         session.getTransaction().commit();
     }
-    public List<Author> allAuthors(){
-
-       List<Author> authors = new ArrayList<>();
+    public void deleteAuthor(int id){
         Session session = HibernateContext.getSession();
         session.beginTransaction();
-        Query query=session.createQuery("from Author");//here persistent class name is Emp
-        authors = query.list();
+
+        EntityManager em = session.getEntityManagerFactory().createEntityManager();
+        em.getTransaction().begin();
+
+        Author author = (Author) em.createQuery("select a " +
+                "from Author a " +
+                "where a.id = :id").setParameter("id", id).getResultList().get(0);
+        em.remove(author);
+
         session.flush();
         session.getTransaction().commit();
+        em.close();
+    }
+    public List<Author> allAuthors() {
+
+        List<Author> authors = new ArrayList<>();
+        Session session = HibernateContext.getSession();
+
+        session.beginTransaction();
+
+        Query query = session.createQuery("from Author");
+
+        authors = query.list();
+
+        session.flush();
+        session.getTransaction().commit();
+
         return authors;
     }
 
-    public List<Book> allBooks(){
+    public List<Book> allBooks() {
 
         List<Book> books = new ArrayList<>();
         Session session = HibernateContext.getSession();
         session.beginTransaction();
-        Query query=session.createQuery("from Book");//here persistent class name is Emp
+        Query query = session.createQuery("from Book");
         books = query.list();
         session.flush();
         session.getTransaction().commit();

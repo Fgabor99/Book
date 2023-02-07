@@ -1,18 +1,41 @@
 import java.time.LocalDate;
-
 public class Main {
     public static void main(String[] args) {
         Menu menu = new Menu();
-        Controller controller = new Controller();
-        Author petofi = controller.addAuthor("Petofi Sandor", LocalDate.of(1823,1,1),"male");
-        controller.addBook(1234567898, "SQL praktikák", LocalDate.of(1998, 10, 5),  3, petofi);
+
+        System.out.println(controller.allAuthors());
         System.out.println(controller.allBooks());
-        menu.printMenu2();
+        menu.menu();
+
         System.out.println(controller.allBooks());
-controller.addAuthor("Piszkos Fred",LocalDate.of());
         controller.deleteAll();
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         /*
         könyvek
         1234567898765,SQL praktikák,3,1998-12-10,34543

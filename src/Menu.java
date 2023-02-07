@@ -3,65 +3,163 @@ import java.util.Scanner;
 
 public class Menu {
     void printMenu(){
-        System.out.println("\tKönyvek (1) ");
-        System.out.println("\tSzerzők (2) ");
-        System.out.println("\tBoltok  (3) ");
-        System.out.println("\tÜsd be a megfelelő számot");
+        System.out.println("         Könyvek (1)     ");
+        System.out.println("         Szerzők (2)     ");
+        System.out.println("         Boltok  (3)     ");
+        System.out.println("Üsd be a megfelelő számot");
     }
-    void printMenu2(){
+    void menu(){
         printMenu();
         Scanner scanner = new Scanner(System.in);
         int num = scanner.nextInt();
         if(num == 1){
             bookMenu(scanner);
         }
-//        if(num == 2){
-//            authorMenu();
-//        }
+        if(num == 2){
+            authorMenu(scanner);
+       }
 //        if (num == 3){
 //         storeMenu();
 //        }
     }
     public void bookMenu(Scanner scanner){
+
         Controller controller=new Controller();
-        System.out.println("\t új könyv hozzáadása (1) ");
-        System.out.println("\t könyv módosítás     (2) ");
-        System.out.println("\t könyv keresés       (3) ");
-        System.out.println("\t könyv kivonása      (4) ");
-        System.out.println("\t vissza a menübe     (0) ");
+
+        System.out.println(" új könyv hozzáadása (1) ");
+        System.out.println(" könyv módosítás     (2) ");
+        System.out.println(" könyv keresés       (3) ");
+        System.out.println(" könyv kivonása      (4) ");
+        System.out.println(" vissza a menübe     (0) ");
+
         int num = scanner.nextInt();
+
         if(num ==1){
-            String fgf = scanner.nextLine();
+            String fgf = scanner.nextLine(); // magyarázzátok el el ne felejtsd
+
             System.out.println("írd be a könyv ISBN-ÉT ");
             int isbn = Integer.parseInt(scanner.nextLine());
-            System.out.println("írd be a könyv Címét");
+
+            System.out.println("írd be a könyv Címét ");
             String title = scanner.nextLine();
-            System.out.println("írd be a könyv Kiadás Dátuma (YYYY-MM-DD)");
+
+            System.out.println("írd be a könyv kiadási dátuma ebben a sorrendben --> (YYYY-MM-DD)");
             String date = scanner.nextLine();
             LocalDate releaseDate = LocalDate.parse(date);
+
             System.out.println("kiadás szám");
             int edition=scanner.nextInt();
+
             System.out.println("írd be a könyv Szerző ID-t");
             int authorId=scanner.nextInt();
+
             controller.addBook(isbn,title,releaseDate,edition, authorId);
         }
-        if(num == 2 ){}
-        if(num == 3 ){}
+        if(num == 2 ){
+            String fgf = scanner.nextLine();
+
+            System.out.println("írd be a könyv ID-T");
+            int id=scanner.nextInt();
+
+            System.out.println("írd be a könyv ISBN-ÉT ");
+            int isbn = Integer.parseInt(scanner.nextLine());
+
+            System.out.println("írd be a könyv Címét ");
+            String title = scanner.nextLine();
+
+            System.out.println("írd be a könyv kiadási dátuma ebben a sorrendben --> (YYYY-MM-DD)");
+            String date = scanner.nextLine();
+            LocalDate releaseDate = LocalDate.parse(date);
+
+            System.out.println("kiadás szám");
+            int edition=scanner.nextInt();
+
+            System.out.println("írd be a könyv Szerző ID-t");
+            int authorId=scanner.nextInt();
+
+            controller.modifyBook(id,isbn,title,releaseDate,edition,authorId);
+        }
+        if(num == 3 ){
+            System.out.println("Mi alaőján szeretnél keresni ?");
+            System.out.println("         Szerző (1)           ");
+            System.out.println("         Cím    (2)           ");
+            System.out.println("         ISBN   (3)           ");
+
+            int num1 = scanner.nextInt();
+
+            if(num1 == 1){
+
+                System.out.println("írd be a szerző teljes nevét ");
+                String name = scanner.nextLine();
+                controller.findBookByAuthor(name);
+            }
+            if(num1 ==2 ){
+                System.out.println("írd be a konyv teljes címét");
+                String bookName = scanner.nextLine();
+                controller.findBookByTitle(bookName);
+            }
+            if(num1 == 3 ) {
+                System.out.println("írd be a könyv ISBN-T");
+                int isbn = scanner.nextInt();
+                controller.findBookByIsbn(isbn);
+            }
+        }
         if(num == 4 ){}
-        if(num == 0 ){printMenu2();}
+        if(num == 0 ){menu();}
     }
     public void authorMenu(Scanner scanner){
+
         Controller controller=new Controller();
 
         System.out.println("\tszerző hozzáadása (1) ");
         System.out.println("\tszerző módosítás  (2) ");
         System.out.println("\tszerző törlése    (3) ");
         System.out.println("\tvissza a menübe   (0) ");
-        int num=scanner.nextInt();
-        if(num == 0 ){printMenu2();}
 
+        int num = scanner.nextInt();
+        if(num == 1){
+            String fgf = scanner.nextLine(); // magyarázzátok el el ne felejtsd
+
+            System.out.println(" írd be a szerző nevét");
+            String name = scanner.nextLine();
+
+            System.out.println("ird be a születési dátumát ebben a sorrendben --> (YYYY-MM-DD)");
+            String bday = scanner.nextLine();
+            LocalDate releaseDate = LocalDate.parse(bday);
+
+            System.out.println("írd be a szerző nemét");
+            String gender = scanner.nextLine();
+
+            controller.addAuthor(name,releaseDate,gender);
+        }
+        if(num == 2){
+
+            System.out.println("írd be a szerző ID-t");
+            int id =scanner.nextInt();
+            String fgf = scanner.nextLine(); // magyarázzátok el el ne felejtsd
+
+            System.out.println(" írd be az új  nevét");
+            String name = scanner.nextLine();
+
+            System.out.println("ird be az új születési dátumát ebben a sorrendben --> (YYYY-MM-DD)");
+            String bday = scanner.nextLine();
+            LocalDate releaseDate = LocalDate.parse(bday);
+
+            System.out.println("írd be a szerző nemét");
+            String gender = scanner.nextLine();
+
+            controller.modifyAuthor(id,name,releaseDate,gender);
+        }
+        if(num == 3){
+            System.out.println("ird be a szerző ID-t");
+            int id = scanner.nextInt();
+
+            controller.deleteAuthor(id);
+        }
+        if(num == 0 ){menu();}
     };
     public void storeMenu(Scanner scanner){
+
         Controller controller = new Controller();
 
         System.out.println(" új könyv hozzáadása (1)");
@@ -70,8 +168,9 @@ public class Menu {
         System.out.println(" új könyv hozzáadása (4)");
         System.out.println(" új könyv hozzáadása (5)");
         System.out.println(" vissza a menübe (0)");
-        int num=scanner.nextInt();
-        if(num == 0 ){printMenu2();}
 
+        int num=scanner.nextInt();
+
+        if(num == 0 ){menu();}
     };
 }
