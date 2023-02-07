@@ -5,7 +5,6 @@ import java.util.List;
 @Table(name = "Store")
 public class Store {
     @ManyToMany
-    @JoinColumn
     private List<Book> book;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

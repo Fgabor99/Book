@@ -24,7 +24,7 @@ public class HibernateContext implements AutoCloseable {
             props.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
             props.put(Environment.SHOW_SQL, "false");
             props.put(Environment.PERSISTENCE_UNIT_NAME, "book");
-            props.put(Environment.HBM2DDL_AUTO, "update");
+            props.put(Environment.HBM2DDL_AUTO, "create-drop");
 
             configuration.setProperties(props);
 

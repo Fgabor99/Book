@@ -1,5 +1,4 @@
 import jakarta.persistence.*;
-import org.hibernate.Remove;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -7,13 +6,15 @@ import java.util.List;
 @Table(name = "Author")
 public class Author {
     @Id
+    @Column(name = "author_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     String name;
     LocalDate birthDate;
     String gender;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.REMOVE, mappedBy = "author")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "author")
     private List<Book> books;
 
     public List<Book> getBook() {

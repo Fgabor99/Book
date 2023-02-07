@@ -1,6 +1,10 @@
 import java.time.LocalDate;
 public class Main {
     public static void main(String[] args) {
+        Controller controller = new Controller();
+        controller.deleteAll();
+        Author author = controller.addAuthor("JKR", LocalDate.of(1982, 10, 12), "woman");
+        controller.addBook(12345, "HP", LocalDate.of(2000, 1, 20), 1, author);
         Menu menu = new Menu();
 
         System.out.println(controller.allAuthors());

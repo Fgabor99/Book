@@ -8,10 +8,11 @@ import java.util.List;
 @Table(name = "Book")
 public class Book {
     @ManyToOne
+    @JoinColumn(name = "author_id")
     private Author author;
 
-//    @ManyToMany
-//    private List<Store> store;
+    @ManyToMany
+    private List<Store> store;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
