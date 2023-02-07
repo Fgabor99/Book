@@ -160,9 +160,9 @@ public class Menu {
         Controller controller = new Controller();
 
         System.out.println(" új bolt hozzáadása  (1)");
-        System.out.println("    bolt módosítása  (2)");
-        System.out.println("szerződés módósítása (3)");
-        System.out.println(" vissza a menübe (0)");
+        System.out.println("szerződés módósítása (2)");
+        System.out.println("    bolt módosítása  (3)");
+        System.out.println("    vissza a menübe  (0)");
 
         int num=scanner.nextInt();
         if(num == 1 ){
@@ -183,9 +183,33 @@ public class Menu {
             controller.addStore(name,address,owner,contract);
         }
         if(num == 2 ){
+            System.out.println("írd be a bolt ID-t");
+            int id = scanner.nextInt();
+            System.out.println("szerződés true vagy false");
+            Boolean contract = scanner.hasNext();
 
+            controller.contractModify(id,contract);
         }
-        if(num == 3 ){}
+        if(num == 3 ){
+            System.out.println("írd be a bolt ID-t");
+            int id = scanner.nextInt();
+
+            String fgf = scanner.nextLine(); // magyarázzátok el el ne felejtsd
+
+            System.out.println("írd be a bolt nevét");
+            String name = scanner.nextLine();
+
+            System.out.println("írd be a bolt címét");
+            String address = scanner.nextLine();
+
+            System.out.println("írd be a tulajdonos nevét");
+            String owner = scanner.nextLine();
+
+            System.out.println("szerződés true vagy false");
+            Boolean contract = scanner.hasNext();
+
+            controller.modifyStore(id,name,address,owner,contract);
+        }
         if(num == 0 ){menu();}
     };
 }

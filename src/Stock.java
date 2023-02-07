@@ -6,7 +6,6 @@ public class Stock {
     //book -> OneToOne
     //store -> OneToOne
     //darabszam ->
-
     @OneToOne
     private List<Book> books;
     @ManyToOne

@@ -9,18 +9,15 @@ public class Author {
     @Column(name = "author_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     String name;
     LocalDate birthDate;
     String gender;
-
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "author")
     private List<Book> books;
 
     public List<Book> getBook() {
         return books;
     }
-
     public void setBook(List<Book> book) {
         this.books = book;
     }
@@ -48,7 +45,6 @@ public class Author {
     public void setGender(String gender) {
         this.gender = gender;
     }
-
     @Override
     public String toString() {
         return "Author{" +

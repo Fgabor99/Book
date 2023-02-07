@@ -9,7 +9,6 @@ import java.util.List;
 @org.springframework.stereotype.Controller
 public class Controller {
     private Store store = new Store();
-
     public void addBook(Integer isbn, String title, LocalDate releaseDate, int edition, Integer authorId) {
 
         addBook(isbn, title, releaseDate, edition, getAuthorById(authorId));
@@ -101,7 +100,6 @@ public class Controller {
 
         return books;
     }
-
     // piac kivezetes es kereses modositasa
     public void modifyAuthor(int id, String name, LocalDate birthDate, String gender) {
 
@@ -191,7 +189,6 @@ public class Controller {
         session.flush();
         session.getTransaction().commit();
     }
-
     public void modifyStore(int id,String name,String address,String owner,Boolean contract){
 
         Session session = HibernateContext.getSession();
@@ -209,6 +206,7 @@ public class Controller {
                 .setParameter("id",id)
                 .setParameter("name",name)
                 .setParameter("address",address)
+                .setParameter("owner",owner)
                 .setParameter("contract",contract)
                 .executeUpdate();
 
@@ -216,19 +214,21 @@ public class Controller {
         session.flush();
         session.getTransaction().commit();
     }
-    public void deleteAll() {
-//        List<Author> authors = allAuthors();
+
+    public void contractModify(int id,Boolean contract){
         Session session = HibernateContext.getSession();
         session.beginTransaction();
-
         EntityManager em = session.getEntityManagerFactory().createEntityManager();
-        em.getTransaction().begin();
-        em.createQuery("delete from Book ").executeUpdate();
-        em.createQuery("delete from Author ").executeUpdate();
 
-//        for (Author author : authors) {
-//            em.remove(author);
-//        };
+        session.createQuery("UPDATE Store s " +
+                        "SET s.id = :id ," +
+                        "s.contract  = :contrct " +
+                        " WHERE s.id = :id")
+
+                .setParameter("id",id)
+                .setParameter("contract",contract)
+                .executeUpdate();
+
         em.close();
         session.flush();
         session.getTransaction().commit();
@@ -259,5 +259,33 @@ public class Controller {
         session.flush();
         session.getTransaction().commit();
         return books;
+    }
+    public List<Store> allStore(){
+
+        List<Store> stores = new ArrayList<>();
+        Session session = HibernateContext.getSession();
+        session.beginTransaction();
+        Query query = session.createQuery("from Store");
+        stores = query.list();
+        session.flush();
+        session.getTransaction().commit();
+        return stores;
+    }
+    public void deleteAll() {
+//        List<Author> authors = allAuthors();
+        Session session = HibernateContext.getSession();
+        session.beginTransaction();
+
+        EntityManager em = session.getEntityManagerFactory().createEntityManager();
+        em.getTransaction().begin();
+        em.createQuery("delete from Book ").executeUpdate();
+        em.createQuery("delete from Author ").executeUpdate();
+
+//        for (Author author : authors) {
+//            em.remove(author);
+//        };
+        em.close();
+        session.flush();
+        session.getTransaction().commit();
     }
 }
